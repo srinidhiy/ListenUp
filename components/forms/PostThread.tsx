@@ -25,6 +25,7 @@ import { createThread } from "@/lib/actions/thread.actions";
 import Thread from "@/lib/models/thread.model";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { useOrganization } from "@clerk/nextjs";
 
 
 
@@ -33,6 +34,7 @@ function PostThread({userId}: {userId: string}) {
     // const { startUpload } = useUploadThing("media");
     const router = useRouter();
     const pathname = usePathname();
+    const { organization } = useOrganization();
 
     const form = useForm({
         resolver: zodResolver(ThreadValidation),
@@ -44,12 +46,13 @@ function PostThread({userId}: {userId: string}) {
     });
 
     const onSubmit = async(values: z.infer<typeof ThreadValidation >) => {
-         await createThread({
+        console.log("ORG ID: ", organization);
+        await createThread({
             text: values.text,
             author: userId,
-            communityId: null,
+            communityId: organization ? organization.id : null,
             path: pathname
-         });
+        });
 
          router.push('/');
     }
