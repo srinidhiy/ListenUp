@@ -15,8 +15,8 @@ import Bottombar from '@/components/shared/Bottombar'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Threads-Clone',
-  description: 'Next.js 13 Threads Clone Application'
+  title: 'Listen-Up',
+  description: 'Next.js 13 Music Platform Application'
 }
 
 export default function RootLayout({

@@ -56,73 +56,11 @@ function PostThread({userId}: {userId: string}) {
          router.push('/');
     }
 
-    /*
-        If I want to do image uploads for threads in the future
-    */
-    // const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
-    //     e.preventDefault();
-
-    //     const fileReader = new FileReader();
-    //     if (e.target.files && e.target.files.length) {
-    //         const file = e.target.files[0];
-    //         setFiles(Array.from(e.target.files));
-    //         if (!file.type.includes('image')) return;
-
-    //         fileReader.onload = async (event) => {
-    //             const imageDataUrl = event.target?.result?.toString() || "";
-
-    //             fieldChange(imageDataUrl);
-    //         }
-
-    //         fileReader.readAsDataURL(file);
-    //     }
-    // }
-
-    // const onSubmit = async(values: z.infer<typeof ThreadValidation>) => {
-    //     const blob = values.image;
-    //     const hasImageChanged = isBase64Image(blob);
-    //     // upload to uploadthing
-    //     if (hasImageChanged) {
-    //         const imgRes = await startUpload(files)
-    //         if (imgRes && imgRes[0].fileUrl) {
-    //             values.image = imgRes[0].fileUrl;
-    //         }
-    //     }
-    //     // update thread object
-        
-    //   }
-
-
     return (
         <Form {...form}>
         <form 
         onSubmit={form.handleSubmit(onSubmit)} 
         className="flex flex-col justify-start gap-10">
-            {/* <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-                <FormItem className="flex items-center gap-4">
-                <FormLabel className="account-form_image-label">
-                    {field.value ? (
-                        <Image src={field.value} alt="profile photo" width={96} height={96} priority className="rounded-full object-contain"/>
-                    ) : (
-                        <Image src="/assets/profile.svg" alt="profile photo" width={24} height={24} className="object-contain"/>
-                    )}
-                </FormLabel>
-                <FormControl className="flex-1 text-base-semibold text-gray-200">
-                    <Input 
-                    type="file" 
-                    accept="image/*" 
-                    placeholder="Upload a photo" 
-                    className="account-form_image-input" 
-                    onChange={(e) => handleImage(e, field.onChange)} 
-                    />
-                </FormControl>
-                </FormItem>
-            )}
-            /> */}
-
             <FormField
             control={form.control}
             name="text"
@@ -141,7 +79,7 @@ function PostThread({userId}: {userId: string}) {
                 </FormItem>
             )}
             />
-            <Button type="submit" className='bg-primary-500'>Post Thread</Button>
+            <Button type="submit" className='bg-primary-500'>Post Review</Button>
         </form>
         </Form>
 
