@@ -26,6 +26,7 @@ import Thread from "@/lib/models/thread.model";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useOrganization } from "@clerk/nextjs";
+import { useState } from "react";
 
 
 
@@ -35,6 +36,24 @@ function PostThread({userId}: {userId: string}) {
     const router = useRouter();
     const pathname = usePathname();
     const { organization } = useOrganization();
+    const [hoveredRating, setHoveredRating] = useState(0);
+    const [selectedRating, setSelectedRating] = useState(0);
+
+    const handleMouseOver = (rating: number) => {
+        setHoveredRating(rating);
+    };
+
+    const handleMouseOut = () => {
+        setHoveredRating(0);
+    };
+
+    const handleClick = (rating: number) => {
+        if (selectedRating === rating) {
+        setSelectedRating(0); // Deselect if the same rating is clicked again
+        } else {
+        setSelectedRating(rating);
+        }
+    };
 
     const form = useForm({
         resolver: zodResolver(ThreadValidation),
@@ -57,7 +76,24 @@ function PostThread({userId}: {userId: string}) {
     }
 
     return (
+        
         <Form {...form}>
+        <div className="star-rating flex items-center">
+        {[1, 2, 3, 4, 5].map((rating) => (
+            <span
+            key={rating}
+            className={`star text-heading1-bold ${
+                (hoveredRating >= rating || selectedRating >= rating) ? 'text-secondary-500' : 'text-gray-400'
+            }`}
+            onMouseOver={() => handleMouseOver(rating)}
+            onMouseOut={handleMouseOut}
+            onClick={() => handleClick(rating)}
+            >
+            &#9733;
+            </span>
+        ))}
+        <p className="ml-2 text-light-1">Selected Rating: {selectedRating}</p>
+        </div>
         <form 
         onSubmit={form.handleSubmit(onSubmit)} 
         className="flex flex-col justify-start gap-10">
@@ -66,9 +102,9 @@ function PostThread({userId}: {userId: string}) {
             name="text"
             render={({ field }) => (
                 <FormItem className="flex flex-col gap-3 w-full my-5">
-                <FormLabel className="text-base-semibold text-light-2">
+                {/* <FormLabel className="text-base-semibold text-light-2">
                     Content
-                </FormLabel>
+                </FormLabel> */}
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
                     <Textarea 
                     rows={10}

@@ -25,6 +25,7 @@ export default async function Home() {
             artist={album.artists}
             imgUrl={album.img_url}
             card_type="regular"
+            route_type="none"
             />
         ))}
         </div>

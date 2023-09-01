@@ -50,3 +50,15 @@ export function formatAlbumDate(dateString: string) {
   return date.toLocaleDateString(undefined, options);
   
 }
+
+export function formatDuration(milliseconds: number) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  var minutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(minutes / 60);
+  if (hours > 0) {
+    minutes %= 60;
+  }
+  const seconds = totalSeconds % 60;
+
+  return (hours > 0) ? `${hours}h ${minutes}m` : `${minutes}m ${seconds}s`;
+}

@@ -25,7 +25,7 @@ async function Page({ searchParams }: {searchParams: {[key: string]: string | un
         <section>
             <h1 className="head-text mb-10">Search</h1>
 
-            <Searchbar />
+            <Searchbar routeType="search" />
 
             <section>
                 <div className="mt-5 gap-10">
@@ -37,6 +37,7 @@ async function Page({ searchParams }: {searchParams: {[key: string]: string | un
                     artist={album.artists}
                     imgUrl={album.img_url}
                     card_type="search_result"
+                    route_type="search"
                     />
                 ))}
                 </div>
