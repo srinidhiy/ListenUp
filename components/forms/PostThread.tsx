@@ -21,16 +21,22 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { Input } from "@/components/ui/input"
-import { createThread } from "@/lib/actions/thread.actions";
-import Thread from "@/lib/models/thread.model";
+import { createReview } from "@/lib/actions/review.actions";
+import Review from "@/lib/models/review.model";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useOrganization } from "@clerk/nextjs";
 import { useState } from "react";
 
+interface Params {
+    userId: string,
+    albumId: string,
+    album_name: string,
+    album_artist: string,
+    album_image: string,
+}
 
-
-function PostThread({userId}: {userId: string}) {
+function PostThread({userId, albumId, album_name, album_artist, album_image}: Params) {
     // const [files, setFiles] = useState<File[]>([])
     // const { startUpload } = useUploadThing("media");
     const router = useRouter();
@@ -61,14 +67,24 @@ function PostThread({userId}: {userId: string}) {
             // image:  "",
             text: "",
             accountId: userId,
+            rating: 0,
+            albumId: albumId,
+            album_name: "",
+            album_artist: "",
+            album_image: ""
         }
     });
 
     const onSubmit = async(values: z.infer<typeof ThreadValidation >) => {
-        await createThread({
+        await createReview({
             text: values.text,
             author: userId,
             communityId: organization ? organization.id : null,
+            albumId: albumId,
+            rating: selectedRating,
+            album_name: album_name,
+            album_artist: album_artist,
+            album_image: album_image,
             path: pathname
         });
 

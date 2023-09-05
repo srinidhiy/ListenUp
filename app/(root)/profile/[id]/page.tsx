@@ -28,7 +28,12 @@ async function Page({ params}: {params: {id: string}}) {
             />
 
             <div className="mt-9">
-                <Tabs defaultValue="threads" className="w-full">
+                <ThreadsTab 
+                    currentUserId= {user.id}
+                    accountId = {userInfo.id}
+                    accountType = "User"
+                />
+                {/* <Tabs defaultValue="threads" className="w-full">
                     <TabsList className="tab">
                         {profileTabs.map((tab) => (
                             <TabsTrigger key={tab.label} value={tab.value} className="tab">
@@ -57,7 +62,7 @@ async function Page({ params}: {params: {id: string}}) {
                             />
                         </TabsContent>
                     ))}
-                </Tabs>
+                </Tabs> */}
             </div>
         </section>
     )

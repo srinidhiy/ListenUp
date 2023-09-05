@@ -2,7 +2,8 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { fetchThreadById } from "@/lib/actions/thread.actions";
+// import { fetchThreadById } from "@/lib/actions/thread.actions";
+import { fetchReviewById, fetchAllChildThreads } from "@/lib/actions/review.actions";
 import Comment from "@/components/forms/Comment";
 
 const Page = async ({ params }: { params: {id: string}}) => {
@@ -14,7 +15,9 @@ const Page = async ({ params }: { params: {id: string}}) => {
     const userInfo = await fetchUser(user.id);
     if (!userInfo.onboarded) redirect('/onboarding');
 
-    const post = await fetchThreadById(params.id);
+    const post = await fetchReviewById(params.id);
+    const comments = await fetchAllChildThreads(params.id)
+    console.log("COMMENTS: ", comments);
 
     return (
 
@@ -30,7 +33,12 @@ const Page = async ({ params }: { params: {id: string}}) => {
             community={post.community}
             createdAt={post.created}
             comments={post.children}
-        />
+            albumId = {post.albumId}
+            album_name={post.album_name}
+            album_artist={post.album_artist}
+            album_image={post.album_image}
+            rating = {post.rating}
+              />
         </div>
 
         <div className="mt-7">
@@ -43,7 +51,7 @@ const Page = async ({ params }: { params: {id: string}}) => {
         </div>
 
         <div className="mt-10">
-            {post.children.map((childItem: any) => (
+            {comments.map((childItem: any) => (
                 <ThreadCard
                     key={childItem._id}
                     id={childItem._id}
@@ -55,6 +63,11 @@ const Page = async ({ params }: { params: {id: string}}) => {
                     createdAt={childItem.created}
                     comments={childItem.children}
                     isComment
+                    albumId={post.albumId}
+                    album_name=""
+                    album_artist=""
+                    album_image=""
+                    rating={0}
                 />
             ))}
         </div>

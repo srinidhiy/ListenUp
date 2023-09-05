@@ -1,6 +1,7 @@
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { fetchUser } from "@/lib/actions/user.actions";
 
 interface Props {
     id: string;
@@ -24,6 +25,11 @@ interface Props {
         }
     }[]
     isComment?: boolean;
+    album_name: string;
+    album_artist: string;
+    album_image: string;
+    rating: number;
+    albumId: string;
 }
 
 const ThreadCard = ({
@@ -36,11 +42,40 @@ const ThreadCard = ({
     createdAt,
     comments,
     isComment,
+    album_image,
+    album_artist,
+    album_name,
+    rating,
+    albumId,
 }: Props) => {
 
+    const starCharacter = '★'; 
+    const starString = starCharacter.repeat(rating);
+    
     return (
         <article className={`flex w-full flex-col rounded-xl  ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
-            <div className="flex items-start justify-between">
+            {!isComment && (
+                <div className='flex flex-wrap items-center gap-3'>
+                <Link href={`/albums/${albumId}`} className='relative h-24 w-24'>
+                  <Image
+                    src={album_image}
+                    alt='album_cover'
+                    fill
+                    // className='rounded-full object-cover'
+                  />
+                </Link>
+    
+                <div>
+                
+                <div className="star text-heading3-bold text-secondary-500">{'★'.repeat(rating)}</div>
+                  <Link href={`/albums/${albumId}`}>
+                    <h4 className='text-base-semibold text-light-1'>{album_name}</h4>
+                  </Link>
+                  <p className='text-small-medium text-gray-1'>{album_artist}</p>
+                </div>
+              </div>
+            )}
+            <div className="mt-6 flex items-start justify-between">
                 <div className="flex w-full flex-1 flex-row gap-4">
                     <div className="flex flex-col items-center">
                         <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
@@ -66,7 +101,7 @@ const ThreadCard = ({
                                 <Image src="/assets/share.svg" alt="share" width={24} height={24} className="cursor-pointer object-contain"/>
                             </div>
 
-                            {isComment && comments.length > 0 && (
+                            {!isComment && comments.length > 0 && (
                                 <Link href={`/thread/${id}`}>
                                     <p className="mt-1 text-subtle-medium text-gray-1">
                                         {comments.length} replies
@@ -79,14 +114,17 @@ const ThreadCard = ({
 
 
             </div>
-            { !isComment && community && (
+            <p className="mt-5 text-subtle-medium text-gray-1">
+                {formatDateString(createdAt)}
+            </p>
+            {/* { !isComment && community && (
                 <Link href={`/communities/${community.id}`} className="mt-5 flex items-center">
                     <p className="text-subtle-medium text-gray-1">
                         {formatDateString(createdAt)} - {community.name} Community
                     </p>
                     <Image src={community.image} alt={community.name} width={14} height={14} className="ml-1 rounded-full object-cover"/>
                 </Link>
-            )}
+            )} */}
         </article>
     )
 

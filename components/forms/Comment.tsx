@@ -20,7 +20,8 @@ import Thread from "@/lib/models/thread.model";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { addCommentToThread } from "@/lib/actions/thread.actions";
+// import { addCommentToThread } from "@/lib/actions/thread.actions";
+import { addCommentToReview } from "@/lib/actions/review.actions";
 
 interface Props {
     threadId: string;
@@ -41,7 +42,7 @@ const Comment = ({ threadId, currentUserImg ,currentUserId}: Props) => {
     });
 
     const onSubmit = async(values: z.infer<typeof CommentValidation >) => {
-        await addCommentToThread(threadId, values.text, JSON.parse(currentUserId), pathname);
+        await addCommentToReview(threadId, values.text, JSON.parse(currentUserId), pathname);
         form.reset();
     }
 

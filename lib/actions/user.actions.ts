@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
 import Community from "../models/community.model";
 import { connectToDB } from "../mongoose"
-import Thread from "../models/thread.model";
+import Review from "../models/review.model";
 import { FilterQuery, SortOrder } from "mongoose";
 
 interface Params {
@@ -70,10 +70,10 @@ export async function fetchUserPosts(userId: string) {
         // find all threads with authorId = userId
         const threads = await User.findOne({id: userId}).populate({
             path: "threads",
-            model: Thread,
+            model: Review,
             populate: {
                 path: 'children',
-                model: Thread,
+                model: Review,
                 populate: [
                     {
                       path: "community",
@@ -82,7 +82,7 @@ export async function fetchUserPosts(userId: string) {
                     },
                     {
                       path: "children",
-                      model: Thread,
+                      model: Review,
                       populate: {
                         path: "author",
                         model: User,
@@ -93,7 +93,7 @@ export async function fetchUserPosts(userId: string) {
             }
         })
 
-        return threads
+        return threads;
 
     } catch (error: any) {
         throw new Error(`Couldn't find posts: ${error.message}`);
@@ -146,12 +146,12 @@ export async function getActivity(userId: string) {
         connectToDB();
 
         // find all threads created by the user
-        const userThreads = await Thread.find({author: userId})
+        const userThreads = await Review.find({author: userId})
         // collect all child thread ids from children field
         const childThreadIds = userThreads.reduce((acc, userThread) => {
             return acc.concat(userThread.children);
         }, [])
-        const replies = await Thread.find({
+        const replies = await Review.find({
             _id: { $in: childThreadIds},
             author: {$ne: userId}
         }).populate({

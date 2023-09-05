@@ -27,7 +27,7 @@ function AlbumCard({ id, name, artist, imgUrl, release_date, card_type, route_ty
       <article className='community-card flex justify-between w-full mt-5'>
         <div>
           <div className='flex flex-wrap items-center gap-3'>
-            <Link href={route_type === "search" ? `/albums/${id}` : `/create-review/${id}`} className='relative h-36 w-36'>
+            <Link href={route_type === "create-review" ? `/create-review/${id}` : `/albums/${id}`} className='relative h-36 w-36'>
               <Image
                 src={imgUrl}
                 alt='album_cover'
@@ -37,7 +37,7 @@ function AlbumCard({ id, name, artist, imgUrl, release_date, card_type, route_ty
             </Link>
 
             <div>
-              <Link href={route_type === "search" ? `/albums/${id}` : `/create-review/${id}`}>
+              <Link href={route_type === "create-review" ? `/create-review/${id}` : `/albums/${id}`}>
                 <h4 className='text-base-semibold text-light-1'>{name}</h4>
               </Link>
               <p className='text-small-medium text-gray-1'>{artist}</p>

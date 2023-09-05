@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDB } from "../mongoose"
-import Thread from "../models/thread.model"
+import Review from "../models/review.model"
 import User from "../models/user.model";
 import Community from "../models/community.model";
 
@@ -19,7 +19,7 @@ interface Params {
     album_image: string,
 }
 
-export async function createThread({text, author, communityId, rating, albumId, album_name, album_artist, album_image, path}: Params) {
+export async function createReview({text, author, communityId, rating, albumId, album_name, album_artist, album_image, path}: Params) {
     try {
         connectToDB();
 
@@ -28,7 +28,7 @@ export async function createThread({text, author, communityId, rating, albumId, 
             { _id: 1 }
         );
     
-        const createdThread = await Thread.create({
+        const createdThread = await Review.create({
             text,
             author,
             community: communityIdObject,
@@ -68,7 +68,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
 
     // fetch posts that have no parents - top level threads
-    const postsQuery = Thread.find({parentId: {$in: [null, undefined]}})
+    const postsQuery = Review.find({parentId: {$in: [null, undefined]}})
         .sort({ created: -1 })
         .skip(skipAmount)
         .limit(pageSize)
@@ -86,7 +86,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
             }
         })
 
-    const totalPosts = await Thread.countDocuments({parentId: {$in: [null, undefined]}});
+    const totalPosts = await Review.countDocuments({parentId: {$in: [null, undefined]}});
 
     const posts = await postsQuery.exec();
 
@@ -96,12 +96,12 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
 }
 
-export async function fetchThreadById(id: string) {
+export async function fetchReviewById(id: string) {
     connectToDB();
 
     try {
 
-        const thread = await Thread.findById(id)
+        const thread = await Review.findById(id)
             .populate({
                 path: 'author',
                 model: User,
@@ -123,7 +123,7 @@ export async function fetchThreadById(id: string) {
                     // have to get comments that are replies to comments as well
                     {
                         path: 'children',
-                        model: Thread,
+                        model: Review,
                         populate: {
                             path: 'author',
                             model: User,
@@ -140,19 +140,68 @@ export async function fetchThreadById(id: string) {
     }
 }
 
-export async function addCommentToThread(threadId: string, commentText: string, userId: string, path: string) {
+
+export async function fetchReviewByAlbum(id: string) {
+    connectToDB();
+
+    try {
+
+        const thread = await Review.find({albumId: id})
+            .populate({
+                path: 'author',
+                model: User,
+                select: "_id id name image"
+            })
+            .populate({
+                path: "community",
+                model: Community,
+                select: "_id id name image",
+              }) // Populate the community field with _id and name
+            .populate({
+                path: 'children',
+                populate: [
+                    {
+                        path: 'author',
+                        model: User,
+                        select: "_id id name parentId image"
+                    },
+                    // have to get comments that are replies to comments as well
+                    {
+                        path: 'children',
+                        model: Review,
+                        populate: {
+                            path: 'author',
+                            model: User,
+                            select: "_id id name parentId image"
+                        }
+                    }
+                ]
+            }).exec();
+            return thread;
+
+    } catch (error: any) {
+        throw new Error(`Error fetching thread: ${error.message}`);
+    }
+}
+
+export async function addCommentToReview(threadId: string, commentText: string, userId: string, path: string) {
     connectToDB();
     try {
         // find original thread by id
-        const originalThread = await Thread.findById(threadId);
+        const originalThread = await Review.findById(threadId);
         if (!originalThread) {
             throw new Error("Thread not found");
         }
         // create new thread with comment text
-        const commentThread = new Thread({
+        const commentThread = new Review({
             text: commentText,
             author: userId,
             parentId: threadId,
+            album_name: "same album",
+            album_artist: "same artist",
+            album_image: "same image",
+            rating: 0,
+            albumId: "same id",
         })
         // save new thread to database
         const savedCommentThread = await commentThread.save();
@@ -167,8 +216,8 @@ export async function addCommentToThread(threadId: string, commentText: string, 
     }
 }
 
-async function fetchAllChildThreads(threadId: string): Promise<any[]> {
-    const childThreads = await Thread.find({ parentId: threadId });
+export async function fetchAllChildThreads(threadId: string): Promise<any[]> {
+    const childThreads = await Review.find({ parentId: threadId });
   
     const descendantThreads = [];
     for (const childThread of childThreads) {
@@ -179,12 +228,12 @@ async function fetchAllChildThreads(threadId: string): Promise<any[]> {
     return descendantThreads;
   }
 
-  export async function deleteThread(id: string, path: string): Promise<void> {
+  export async function deleteReview(id: string, path: string): Promise<void> {
     try {
       connectToDB();
   
       // Find the thread to be deleted (the main thread)
-      const mainThread = await Thread.findById(id).populate("author community");
+      const mainThread = await Review.findById(id).populate("author community");
   
       if (!mainThread) {
         throw new Error("Thread not found");
@@ -215,7 +264,7 @@ async function fetchAllChildThreads(threadId: string): Promise<any[]> {
       );
   
       // Recursively delete child threads and their descendants
-      await Thread.deleteMany({ _id: { $in: descendantThreadIds } });
+      await Review.deleteMany({ _id: { $in: descendantThreadIds } });
   
       // Update User model
       await User.updateMany(

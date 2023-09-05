@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const threadSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
    text: {type: String, required: true},
    author: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,5 +31,5 @@ const threadSchema = new mongoose.Schema({
    album_image: {type: String, required: true},
 });
 
-const Thread = mongoose.models.Thread || mongoose.model('Thread', threadSchema );
-export default Thread;
+const Review = mongoose.models.Review || mongoose.model('Review', reviewSchema );
+export default Review;

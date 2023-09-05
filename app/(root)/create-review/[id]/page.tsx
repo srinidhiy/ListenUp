@@ -29,7 +29,13 @@ async function Page({ params}: {params: {id: string}}) {
                     route_type="search"
             />
             <div className="my-2"></div>
-            <PostThread userId = {userInfo._id} />
+            <PostThread 
+                userId = {userInfo._id} 
+                albumId={params.id} 
+                album_name={album.name} 
+                album_artist={album.artists} 
+                album_image={album.img_url}
+             />
         </>
     )
 }

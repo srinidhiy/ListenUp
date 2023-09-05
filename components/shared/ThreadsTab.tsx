@@ -22,22 +22,23 @@ const ThreadsTab = async ({ currentUserId, accountId, accountType}: Props) => {
 
     return (
         <section className="mt-9 flex flex-col gap-10">
-            {result.threads.map((thread: any) => (
+            {result.threads.map((post: any) => (
                 <ThreadCard
-                    key={thread._id}
-                    id={thread._id}
-                    currentUserId={currentUserId}
-                    parentId={thread.parentId}
-                    content={thread.text}
-                    author={
-                        accountType === "User" ? {name: result.name, image: result.image, id: result.id} 
-                        : {name: thread.author.name, image: thread.author.image, id: thread.author.id}
-                    }
-                    community={thread.community}
-                    createdAt={thread.created}
-                    comments={thread.children}
-                    isComment
-                />
+                key={post._id}
+                id={post._id}
+                currentUserId={currentUserId || ""}
+                parentId={post.parentId}
+                content={post.text}
+                author={post.author}
+                community={post.community}
+                createdAt={post.created}
+                comments={post.children}
+                albumId = {post.albumId}
+                album_name={post.album_name}
+                album_artist={post.album_artist}
+                album_image={post.album_image}
+                rating = {post.rating}
+              />  
             ))}
         </section>
     )
