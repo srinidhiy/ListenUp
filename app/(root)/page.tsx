@@ -1,10 +1,10 @@
 //app/page.tsx
 import { UserButton } from "@clerk/nextjs";
-import { fetchPosts } from "@/lib/actions/review.actions";
 import { currentUser } from "@clerk/nextjs";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { getNewReleases } from "@/lib/spotify";
 import AlbumCard from "@/components/cards/AlbumCard";
+import { fetchPosts } from "@/lib/actions/review.actions";
 
 export default async function Home() {
   const result = await fetchPosts(1, 30);

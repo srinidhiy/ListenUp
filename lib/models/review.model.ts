@@ -21,7 +21,7 @@ const reviewSchema = new mongoose.Schema({
    children: [
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Thread',
+        ref: 'Review',
     },
    ],
    rating: {type: Number, required: true},

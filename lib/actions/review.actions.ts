@@ -1,9 +1,10 @@
 "use server"
 
-import { connectToDB } from "../mongoose"
-import Review from "../models/review.model"
+import Review from "../models/review.model";
 import User from "../models/user.model";
+import Thread from "../models/thread.model";
 import Community from "../models/community.model";
+import { connectToDB } from "../mongoose"
 
 import { revalidatePath } from "next/cache";
 
@@ -65,7 +66,8 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
     // figuring out first post to show on the page - in case of pagination
     const skipAmount = (pageNumber - 1) * pageSize;
-
+    const x = Thread.find({parentId: {$in: [null, undefined]}});
+    x.exec();
 
     // fetch posts that have no parents - top level threads
     const postsQuery = Review.find({parentId: {$in: [null, undefined]}})

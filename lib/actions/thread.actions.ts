@@ -1,7 +1,7 @@
 "use server"
 
-import { connectToDB } from "../mongoose"
 import Thread from "../models/thread.model"
+import { connectToDB } from "../mongoose"
 import User from "../models/user.model";
 import Community from "../models/community.model";
 
@@ -60,41 +60,41 @@ export async function createThread({text, author, communityId, rating, albumId, 
     }
 }
 
-export async function fetchPosts(pageNumber = 1, pageSize = 20) {
-    connectToDB();
+// export async function fetchPosts(pageNumber = 1, pageSize = 20) {
+//     connectToDB();
 
-    // figuring out first post to show on the page - in case of pagination
-    const skipAmount = (pageNumber - 1) * pageSize;
+//     // figuring out first post to show on the page - in case of pagination
+//     const skipAmount = (pageNumber - 1) * pageSize;
 
 
-    // fetch posts that have no parents - top level threads
-    const postsQuery = Thread.find({parentId: {$in: [null, undefined]}})
-        .sort({ created: -1 })
-        .skip(skipAmount)
-        .limit(pageSize)
-        .populate({path: "author", model: User})
-        .populate({
-            path: "community",
-            model: Community,
-          })
-        .populate({
-            path: "children", 
-            populate: {
-                path: "author",
-                model: User,
-                select: "_id name parentId image"
-            }
-        })
+//     // fetch posts that have no parents - top level threads
+//     const postsQuery = Thread.find({parentId: {$in: [null, undefined]}})
+//         .sort({ created: -1 })
+//         .skip(skipAmount)
+//         .limit(pageSize)
+//         .populate({path: "author", model: User})
+//         .populate({
+//             path: "community",
+//             model: Community,
+//           })
+//         .populate({
+//             path: "children", 
+//             populate: {
+//                 path: "author",
+//                 model: User,
+//                 select: "_id name parentId image"
+//             }
+//         })
 
-    const totalPosts = await Thread.countDocuments({parentId: {$in: [null, undefined]}});
+//     const totalPosts = await Thread.countDocuments({parentId: {$in: [null, undefined]}});
 
-    const posts = await postsQuery.exec();
+//     const posts = await postsQuery.exec();
 
-    const isNext = totalPosts > skipAmount + posts.length
+//     const isNext = totalPosts > skipAmount + posts.length
 
-    return {posts, isNext} 
+//     return {posts, isNext} 
 
-}
+// }
 
 export async function fetchThreadById(id: string) {
     connectToDB();

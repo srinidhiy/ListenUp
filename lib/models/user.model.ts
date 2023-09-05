@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     threads: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Thread'
+            ref: 'Review'
         }
     ],
     onboarded: {type: Boolean, default: false},
